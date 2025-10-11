@@ -1,5 +1,4 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
 const Employee = require('../models/Employee');
 
 
@@ -23,79 +22,39 @@ router.get('/employees', async (req, res) => {
 });
 
 
-/* User Signup */
-router.post('/signup', async (req, res) => {
+/* Employee Creation */
+router.post('/employees', async (req, res) => {
 
-    const { username, email, password } = req.body;
+    const { first_name, last_name, email, position, salary, date_of_joining, department } = req.body;
 
-    if (!username || !email || !password)
+    if (!first_name || !last_name || !email || !date_of_joining)
         return res.status(400).json({ error: 'All fields are required' });
 
     try {
 
-        const existingUser = await User.findOne({ 
-            $or: [{ username }, { email }] 
+        const existingEmployee = await Employee.findOne({ 
+            $or: [{ email }] 
         });
 
-        if (existingUser)
-            return res.status(400).json({ error: 'Username or email already exists' });
+        if (existingEmployee)
+            return res.status(400).json({ error: `Employee with email ${email} already exists` });
 
-
-        // 🔐 Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const newUser = new User({
-
-            username,
-            email,
-            password: hashedPassword
+        const newEmployee = new Employee({
+            first_name, last_name, email, position, salary, date_of_joining, department
         });
 
-        await newUser.save();
+        await newEmployee.save();
 
         res.status(201).json({
             status: true,
-            message: 'Signup successful',
-            user: {
-                username: newUser.username,
-                email: newUser.email,
-                created_at: newUser.created_at
+            message: 'Employee successfully created',
+            employee: {
+                first_name: newEmployee.first_name,
+                last_name: newEmployee.last_name,
+                email: newEmployee.email,
+                created_at: newEmployee.created_at
             }
         });
-
-    } 
-    
-    catch (err) {
-
-        res.status(500).json({ error: err.message });
-    }
-});
-
-
-/* User Login */
-router.post('/login', async (req, res) => {
-
-    const { username, password } = req.body;
-
-    if (!username || !password)
-        return res.status(400).json({ error: 'Username and password are required' });
-
-    try {
-
-        const user = await User.findOne({ username });
-
-        if (!user)
-            return res.json({ status: false, message: 'Username is invalid' });
-
-
-        const validPassword = await bcrypt.compare(password, user.password);
-
-        if (!validPassword)
-            return res.json({ status: false, message: 'Password is invalid' });
-
-
-        res.json({ status: true, message: 'User is valid' });
-
     } 
     
     catch (err) {
