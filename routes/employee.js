@@ -12,7 +12,6 @@ router.get('/employees', async (req, res) => {
 
         const employees = await Employee.find();
         res.json(employees);
-
     } 
     
     catch (err) {
@@ -35,7 +34,6 @@ router.get('/employees/:id', async (req, res) => {
             return res.status(404).json({ error: `Employee with ID: ${id} not found` });
 
         res.json(employee);
-
     } 
     
     catch (err) {
@@ -61,7 +59,7 @@ router.post('/employees', async (req, res) => {
 
         if (existingEmployee)
             return res.status(400).json({ error: `Employee with email ${email} already exists` });
-
+        
         const newEmployee = new Employee({
             first_name, last_name, email, position, salary, date_of_joining, department
         });
