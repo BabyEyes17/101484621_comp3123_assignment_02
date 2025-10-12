@@ -11,7 +11,7 @@ router.get('/employees', async (req, res) => {
     try {
 
         const employees = await Employee.find();
-        res.json(users);
+        res.json(employees);
 
     } 
     
@@ -22,7 +22,30 @@ router.get('/employees', async (req, res) => {
 });
 
 
-/* Employee Creation */
+/* Get Employee By ID */
+router.get('/employees/:id', async (req, res) => {
+
+    const { id } = req.params;
+
+    try {
+
+        const employee = await Employee.findById(id);
+
+        if (!employee)
+            return res.status(404).json({ error: `Employee with ID: ${id} not found` });
+
+        res.json(employee);
+
+    } 
+    
+    catch (err) {
+
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+/* Create Employee */
 router.post('/employees', async (req, res) => {
 
     const { first_name, last_name, email, position, salary, date_of_joining, department } = req.body;
@@ -48,12 +71,64 @@ router.post('/employees', async (req, res) => {
         res.status(201).json({
             status: true,
             message: 'Employee successfully created',
-            employee: {
-                first_name: newEmployee.first_name,
-                last_name: newEmployee.last_name,
-                email: newEmployee.email,
-                created_at: newEmployee.created_at
-            }
+            newEmployee
+        });
+    } 
+    
+    catch (err) {
+
+        res.status(500).json({ error: err.message });
+    }
+});
+
+
+/* Update Employee */
+router.put('/employees/:id', async (req, res) => {
+
+    const { id } = req.params;
+    const updates = req.body;
+
+    try {
+
+        const updatedEmployee = await Employee.findByIdAndUpdate(
+            id, 
+            { ...updates, updated_at: Date.now() }, 
+            { new: true, runValidators: true }
+        );
+
+        if (!updatedEmployee)
+            return res.status(404).json({ error: `Employee with ID: ${id} not found` });
+
+        res.json({
+            status: true,
+            message: 'Employee successfully updated',
+            updatedEmployee
+        });
+    } 
+    
+    catch (err) {
+
+        res.status(500).json({ error: err.message });
+    }
+})
+
+
+/* Delete Employee */
+router.delete('/employees/:id', async (req, res) => {
+
+    const { id } = req.params;
+
+    try {
+
+        const deletedEmployee = await Employee.findByIdAndDelete(id);
+
+        if (!deletedEmployee)
+            return res.status(404).json({ error: `Employee with ID: ${id} not found` });
+
+        res.json({
+            status: true,
+            message: 'Employee successfully deleted',
+            deletedEmployee
         });
     } 
     
