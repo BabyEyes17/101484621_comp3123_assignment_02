@@ -25,6 +25,10 @@ app.get('/home', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'home.html'));
 });
 
+app.get('/', (req, res) => {
+  res.send('API is running on Vercel');
+});
+
 
 /* Server */
 const PORT = process.env.PORT || 3000;
