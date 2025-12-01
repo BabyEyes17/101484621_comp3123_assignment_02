@@ -5,6 +5,7 @@ const Employee = require('../models/Employee');
 const router = express.Router();
 
 
+
 /* Employee List */
 router.get('/employees', auth, async (req, res) => {
 
@@ -19,6 +20,7 @@ router.get('/employees', auth, async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 
 /* Get Employee By ID */
@@ -41,6 +43,7 @@ router.get('/employees/:id', auth, async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
 
 
 /* Create Employee */
@@ -80,6 +83,7 @@ router.post('/employees', auth, async (req, res) => {
 });
 
 
+
 /* Update Employee */
 router.put('/employees/:id', auth, async (req, res) => {
 
@@ -111,6 +115,7 @@ router.put('/employees/:id', auth, async (req, res) => {
 })
 
 
+
 /* Delete Employee */
 router.delete('/employees/:id', auth, async (req, res) => {
 
@@ -135,5 +140,47 @@ router.delete('/employees/:id', auth, async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
+
+
+
+/* Search Employee */
+router.get("/employees/search", auth, async (req, res) => {
+  
+    const { department, position } = req.query;
+
+  const query = {};
+
+  if (department) query.department = department;
+  
+  if (position) query.position = position;
+
+  try {
+    
+    const results = await Employee.find(query);
+    res.json(results);
+  } 
+  
+  catch (err) {
+
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
+/* Employee Profile Image Upload */
+const multer = require("multer");
+
+const storage = multer.diskStorage({
+  
+  destination: "../uploads/",
+  
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+
+const upload = multer({ storage });
+
 
 module.exports = router;
