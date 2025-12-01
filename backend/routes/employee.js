@@ -1,8 +1,22 @@
-const express = require('express');
 const Employee = require('../models/Employee');
-
-
 const router = express.Router();
+const auth = require("../auth");
+const multer = require("multer");
+const express = require('express');
+
+
+
+/* Employee Profile Image Upload Setup */
+const storage = multer.diskStorage({
+  
+  destination: "uploads/",
+  
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + "-" + file.originalname);
+  }
+});
+
+const upload = multer({ storage });
 
 
 
@@ -47,8 +61,9 @@ router.get('/employees/:id', auth, async (req, res) => {
 
 
 /* Create Employee */
-router.post('/employees', auth, async (req, res) => {
+router.post('/employees', auth, upload.single("profileImage"), async (req, res) => {
 
+    const profileImageUrl = req.file ? `/uploads/${req.file.filename}` : null;
     const { first_name, last_name, email, position, salary, date_of_joining, department } = req.body;
 
     if (!first_name || !last_name || !email || !date_of_joining)
@@ -64,7 +79,7 @@ router.post('/employees', auth, async (req, res) => {
             return res.status(400).json({ error: `Employee with email ${email} already exists` });
         
         const newEmployee = new Employee({
-            first_name, last_name, email, position, salary, date_of_joining, department
+            first_name, last_name, email, position, salary, date_of_joining, department, profileImageUrl
         });
 
         await newEmployee.save();
@@ -85,12 +100,16 @@ router.post('/employees', auth, async (req, res) => {
 
 
 /* Update Employee */
-router.put('/employees/:id', auth, async (req, res) => {
+router.put('/employees/:id', auth, upload.single("profileImage"), async (req, res) => {
 
     const { id } = req.params;
     const updates = req.body;
 
     try {
+        
+        if (req.file) {
+            updates.profileImageUrl = `/uploads/${req.file.filename}`;
+        }
 
         const updatedEmployee = await Employee.findByIdAndUpdate(
             id, 
@@ -165,22 +184,5 @@ router.get("/employees/search", auth, async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
-
-
-/* Employee Profile Image Upload */
-const multer = require("multer");
-
-const storage = multer.diskStorage({
-  
-  destination: "../uploads/",
-  
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  }
-});
-
-const upload = multer({ storage });
-
 
 module.exports = router;
