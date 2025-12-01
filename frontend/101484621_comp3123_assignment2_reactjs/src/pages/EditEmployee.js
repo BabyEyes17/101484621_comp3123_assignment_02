@@ -31,6 +31,8 @@ export default function EditEmployee() {
       setSalary(emp.salary || "");
       setDateOfJoining(emp.date_of_joining?.split("T")[0] || "");
       setDepartment(emp.department || "");
+
+      // Correct backend image field:
       setExistingImage(emp.profileImageUrl || null);
 
     } catch (err) {
@@ -42,7 +44,7 @@ export default function EditEmployee() {
     fetchEmployee();
   }, [id]);
 
-  // Submit changes
+  // Submit updated employee
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -137,7 +139,7 @@ export default function EditEmployee() {
           <div>
             <p>Current Profile Image:</p>
             <img
-              src={`http://localhost:3000${existingImage}`}
+              src={`${process.env.REACT_APP_API_URL}${existingImage}`}
               alt="Employee"
               width="120"
               height="120"
@@ -147,7 +149,6 @@ export default function EditEmployee() {
           </div>
         )}
 
-        {/* Upload New Image */}
         <label>Upload New Image (optional):</label><br />
         <input
           type="file"
@@ -156,6 +157,7 @@ export default function EditEmployee() {
         /><br/><br/>
 
         <button type="submit">Update Employee</button>
+
         <button
           type="button"
           style={{ marginLeft: "10px" }}
@@ -163,6 +165,7 @@ export default function EditEmployee() {
         >
           Cancel
         </button>
+
       </form>
     </div>
   );

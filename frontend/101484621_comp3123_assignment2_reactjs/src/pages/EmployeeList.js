@@ -131,15 +131,15 @@ export default function EmployeeList() {
                 <td>
                   {emp.profileImageUrl ? (
                     <img 
-                      src={`http://localhost:3000${emp.profileImageUrl}`} 
-                      alt="profile"
-                      width="60"
-                      height="60"
-                      style={{ borderRadius: "10px", objectFit: "cover" }}
+                        src={`${process.env.REACT_APP_API_URL}${emp.profileImageUrl}`} 
+                        alt="profile"
+                        width="60"
+                        height="60"
+                        style={{ borderRadius: "10px", objectFit: "cover" }}
                     />
-                  ) : (
+                    ) : (
                     <span>No Image</span>
-                  )}
+                    )}
                 </td>
 
                 <td>{emp.first_name} {emp.last_name}</td>
