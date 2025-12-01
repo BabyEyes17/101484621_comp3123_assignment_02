@@ -1,11 +1,21 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+
+  // We track token *locally* so Navbar re-renders when it changes
+  const [token, setToken] = useState(localStorage.getItem("token"));
+
+  // Re-check token on ANY route change
+  useEffect(() => {
+    const stored = localStorage.getItem("token");
+    if (stored !== token) setToken(stored);
+  });
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    setToken(null);        // ⬅ force navbar refresh
     navigate("/login");
   };
 
@@ -54,7 +64,6 @@ const styles = {
     fontSize: "20px",
     fontWeight: "bold",
   },
-  left: {},
   right: {
     display: "flex",
     alignItems: "center",

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axiosClient";
+import { API_BASE_URL } from "../api/config";
 
 export default function EmployeeDetails() {
   const { id } = useParams();
@@ -35,28 +36,51 @@ export default function EmployeeDetails() {
       {/* Profile Image */}
       {employee.profileImageUrl && (
         <img
-          src={`${API_BASE_URL}${emp.profileImageUrl}`}
+          src={`${API_BASE_URL}${employee.profileImageUrl}`}
           alt="Employee"
           width="150"
           height="150"
-          style={{ borderRadius: "10px", objectFit: "cover", marginBottom: "20px" }}
+          style={{
+            borderRadius: "10px",
+            objectFit: "cover",
+            marginBottom: "20px",
+          }}
         />
       )}
 
-      <p><strong>Name:</strong> {employee.first_name} {employee.last_name}</p>
-      <p><strong>Email:</strong> {employee.email}</p>
-      <p><strong>Position:</strong> {employee.position || "N/A"}</p>
-      <p><strong>Department:</strong> {employee.department || "N/A"}</p>
-      <p><strong>Salary:</strong> {employee.salary || "N/A"}</p>
-      <p><strong>Date of Joining:</strong> {new Date(employee.date_of_joining).toLocaleDateString()}</p>
-      <p><strong>Created:</strong> {new Date(employee.created_at).toLocaleString()}</p>
-      <p><strong>Last Updated:</strong> {new Date(employee.updated_at).toLocaleString()}</p>
+      <p>
+        <strong>Name:</strong> {employee.first_name} {employee.last_name}
+      </p>
+      <p>
+        <strong>Email:</strong> {employee.email}
+      </p>
+      <p>
+        <strong>Position:</strong> {employee.position || "N/A"}
+      </p>
+      <p>
+        <strong>Department:</strong> {employee.department || "N/A"}
+      </p>
+      <p>
+        <strong>Salary:</strong> {employee.salary || "N/A"}
+      </p>
+      <p>
+        <strong>Date of Joining:</strong>{" "}
+        {new Date(employee.date_of_joining).toLocaleDateString()}
+      </p>
+      <p>
+        <strong>Created:</strong>{" "}
+        {new Date(employee.created_at).toLocaleString()}
+      </p>
+      <p>
+        <strong>Last Updated:</strong>{" "}
+        {new Date(employee.updated_at).toLocaleString()}
+      </p>
 
       <br />
 
       <button onClick={() => navigate(`/employees/${id}/edit`)}>Edit</button>
-      <button 
-        style={{ marginLeft: "10px" }} 
+      <button
+        style={{ marginLeft: "10px" }}
         onClick={() => navigate("/employees")}
       >
         Back

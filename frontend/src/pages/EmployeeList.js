@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axiosClient";
+import { API_BASE_URL } from "../api/config";
+
 
 export default function EmployeeList() {
   const navigate = useNavigate();
