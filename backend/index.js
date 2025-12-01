@@ -2,19 +2,24 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
 const app = express();
+const cors = require("cors");
 
 const userRouter = require('./routes/user');
 const employeeRouter = require('./routes/employee');
 
 
 /* MongoDB Connection */
-mongoose.connect('mongodb+srv://jayden-lewis:admin@comp3123-cluster.njwrjmg.mongodb.net/comp3123_assigment1')
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch(err => console.error('MongoDB connection error:', err));
 
 
 /* Middleware */
 app.use(express.json());
+app.use(cors({
+  origin: "*",
+}));
+app.use("/uploads", express.static("uploads"));
 
 
 /* Routes */
