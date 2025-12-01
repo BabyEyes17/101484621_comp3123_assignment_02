@@ -8,10 +8,12 @@ const userRouter = require('./routes/user');
 const employeeRouter = require('./routes/employee');
 
 
+
 /* MongoDB Connection */
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to MongoDB Atlas'))
   .catch(err => console.error('MongoDB connection error:', err));
+
 
 
 /* Middleware */
@@ -19,7 +21,9 @@ app.use(express.json());
 app.use(cors({
   origin: "*",
 }));
+
 app.use("/uploads", express.static("uploads"));
+
 
 
 /* Routes */
@@ -35,6 +39,7 @@ app.get('/', (req, res) => {
 });
 
 
+
 /* Server */
 const PORT = process.env.PORT || 3000;
 
@@ -43,6 +48,7 @@ if (process.env.VERCEL) {
 } 
 
 else {
+  
   app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
   });

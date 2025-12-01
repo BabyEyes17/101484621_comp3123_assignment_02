@@ -17,17 +17,18 @@ function RequireAuth({ children }) {
 function App() {
   return (
     <Router>
-
-      {/* Navbar ALWAYS visible */}
       <Navbar />
-
       <Routes>
-        {/* Default route */}
+        
         <Route path="/" element={<Navigate to="/login" />} />
+
+
 
         {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+
+
 
         {/* Protected routes */}
         <Route
@@ -65,6 +66,9 @@ function App() {
             </RequireAuth>
           }
         />
+
+
+        
       </Routes>
     </Router>
   );
