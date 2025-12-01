@@ -25,49 +25,41 @@ router.get('/userlist', async (req, res) => {
 
 /* User Signup */
 router.post('/signup', async (req, res) => {
+  const { username, email, password } = req.body;
 
-    const { username, email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: "Email and password are required" });
+  }
 
-    if (!username || !email || !password)
-        return res.status(400).json({ error: 'All fields are required' });
+  try {
+    const existingUser = await User.findOne({ email });
 
-    try {
-
-        const existingUser = await User.findOne({ 
-            $or: [{ username }, { email }] 
-        });
-
-        if (existingUser)
-            return res.status(400).json({ error: 'Username or email already exists' });
-
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        const newUser = new User({
-
-            username,
-            email,
-            password: hashedPassword
-        });
-
-        await newUser.save();
-
-        res.status(201).json({
-            status: true,
-            message: 'Signup successful',
-            user: {
-                username: newUser.username,
-                email: newUser.email,
-                created_at: newUser.created_at
-            }
-        });
-
-    } 
-    
-    catch (err) {
-
-        res.status(500).json({ error: err.message });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already exists" });
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      username: username || email.split("@")[0], 
+      email,
+      password: hashedPassword
+    });
+
+    await newUser.save();
+
+    res.status(201).json({
+      status: true,
+      message: "Signup successful",
+      user: {
+        username: newUser.username,
+        email: newUser.email
+      }
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 
