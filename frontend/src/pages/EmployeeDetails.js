@@ -35,7 +35,7 @@ export default function EmployeeDetails() {
       {/* Profile Image */}
       {employee.profileImageUrl && (
         <img
-          src={`${process.env.REACT_APP_API_URL}${employee.profileImageUrl}`}
+          src={`${API_BASE_URL}${emp.profileImageUrl}`}
           alt="Employee"
           width="150"
           height="150"

@@ -130,7 +130,7 @@ export default function EmployeeList() {
                 <td>
                   {emp.profileImageUrl ? (
                     <img 
-                        src={`${process.env.REACT_APP_API_URL}${emp.profileImageUrl}`} 
+                        src={`${API_BASE_URL}${emp.profileImageUrl}`} 
                         alt="profile"
                         width="60"
                         height="60"
