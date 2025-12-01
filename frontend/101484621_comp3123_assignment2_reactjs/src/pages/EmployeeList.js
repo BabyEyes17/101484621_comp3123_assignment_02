@@ -103,7 +103,6 @@ export default function EmployeeList() {
         Add Employee
       </button>
 
-      {/* Error message */}
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       {/* Employee Table */}
@@ -149,6 +148,7 @@ export default function EmployeeList() {
                 <td>{new Date(emp.date_of_joining).toLocaleDateString()}</td>
 
                 <td>
+                  
                   <button onClick={() => navigate(`/employees/${emp._id}`)}>
                     View
                   </button>
@@ -163,6 +163,7 @@ export default function EmployeeList() {
                   >
                     Delete
                   </button>
+                  
                 </td>
               </tr>
             ))
