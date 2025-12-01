@@ -8,15 +8,20 @@ const app = express();
 /* ---------------------------------------------
    CORS — must be FIRST middleware
 ----------------------------------------------*/
+const allowedOrigins = [
+  "https://101484621-comp3123-assignment-02-7ly7x3q2i.vercel.app",
+  "https://101484621-comp3123-assignment-02-240o6fwyl.vercel.app",
+  "http://localhost:3000"
+];
+
 app.use(cors({
-  origin: [
-    "https://101484621-comp3123-assignment-02-7ly7x3q2i.vercel.app",
-    "https://101484621-comp3123-assignment-02-240o6fwyl.vercel.app",
-    "http://localhost:3000"
-  ],
+  origin: allowedOrigins,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+app.options(/.*/, cors());
+
 
 // Handle preflight requests
 app.options("*", cors());
