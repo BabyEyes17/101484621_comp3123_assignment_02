@@ -1,4 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+
+import Navbar from "./components/Navbar";
+
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import EmployeeList from "./pages/EmployeeList";
@@ -14,13 +17,19 @@ function RequireAuth({ children }) {
 function App() {
   return (
     <Router>
-      <Routes>
 
+      {/* Navbar ALWAYS visible */}
+      <Navbar />
+
+      <Routes>
+        {/* Default route */}
         <Route path="/" element={<Navigate to="/login" />} />
 
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
+        {/* Protected routes */}
         <Route
           path="/employees"
           element={
@@ -56,7 +65,6 @@ function App() {
             </RequireAuth>
           }
         />
-
       </Routes>
     </Router>
   );
