@@ -1,43 +1,50 @@
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
-const app = express();
 const cors = require("cors");
 
-/* CORS FIX */
+const app = express();
+
+/* ---------------------------------------------
+   CORS — must be FIRST middleware
+----------------------------------------------*/
 app.use(cors({
   origin: [
-    "http://localhost:3000",
-    "https://101484621-comp3123-assignment-02-240o6fwyl.vercel.app"
+    "https://101484621-comp3123-assignment-02-7ly7x3q2i.vercel.app",
+    "https://101484621-comp3123-assignment-02-240o6fwyl.vercel.app",
+    "http://localhost:3000"
   ],
-  methods: ["GET", "POST", "PUT", "DELETE"],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
+// Handle preflight requests
+app.options("*", cors());
 
 /* Body Parser */
 app.use(express.json());
 
-/* Static Uploads */
+/* MongoDB */
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('Connected to MongoDB Atlas'))
+  .catch(err => console.error(err));
+
+/* Static files */
 app.use("/uploads", express.static("uploads"));
 
-/* Routes */
+/* Routers */
 const userRouter = require('./routes/user');
 const employeeRouter = require('./routes/employee');
 
 app.use('/api/v1/user', userRouter);
 app.use('/api/v1/emp', employeeRouter);
 
-/* Root */
+/* Test Route */
 app.get('/', (req, res) => {
-  res.send('API is running on Render');
+  res.send('API is running');
 });
 
-/* Mongoose */
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Connected to MongoDB Atlas'))
-  .catch(err => console.error(err));
-
-/* Export for Vercel */
+/* Render / Local compatibility */
 const PORT = process.env.PORT || 3000;
 if (process.env.VERCEL) {
   module.exports = app;
