@@ -1,8 +1,9 @@
-const Employee = require('../models/Employee');
+const express = require('express');
 const router = express.Router();
+
+const Employee = require('../models/Employee');
 const auth = require("../auth");
 const multer = require("multer");
-const express = require('express');
 
 
 
