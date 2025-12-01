@@ -22,7 +22,7 @@ const upload = multer({ storage });
 
 
 /* Employee List */
-router.get('/employees', auth, async (req, res) => {
+router.get('/employees', async (req, res) => {
 
     try {
 
@@ -39,7 +39,7 @@ router.get('/employees', auth, async (req, res) => {
 
 
 /* Get Employee By ID */
-router.get('/employees/:id', auth, async (req, res) => {
+router.get('/employees/:id', async (req, res) => {
 
     const { id } = req.params;
 
@@ -164,7 +164,7 @@ router.delete('/employees/:id', auth, async (req, res) => {
 
 
 /* Search Employee */
-router.get("/employees/search", auth, async (req, res) => {
+router.get("/employees/search", async (req, res) => {
   
     const { department, position } = req.query;
 
