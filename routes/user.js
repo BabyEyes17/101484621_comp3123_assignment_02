@@ -2,7 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
 
-
+0.
 const router = express.Router();
 
 
@@ -75,26 +75,42 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
 
     const { username, password } = req.body;
+    
+    const jwt = require("jsonwebtoken");
+    const SECRET = "mysecret";
 
-    if (!username || !password)
+    if (!username || !password) {
         return res.status(400).json({ error: 'Username and password are required' });
+    }
 
     try {
 
         const user = await User.findOne({ username });
 
-        if (!user)
+        if (!user) {
             return res.json({ status: false, message: 'Username is invalid' });
+        }
 
 
         const validPassword = await bcrypt.compare(password, user.password);
 
-        if (!validPassword)
+        if (!validPassword) {
             return res.json({ status: false, message: 'Password is invalid' });
+        }
+            
 
 
-        res.json({ status: true, message: 'User is valid' });
+        const token = jwt.sign(
+            { id: user._id, username: user.username },
+            SECRET,
+            { expiresIn: '1d' }
+        );
 
+        return res.json({
+            status: true,
+            message: 'Login successful',
+            token
+        });
     } 
     
     catch (err) {

@@ -6,7 +6,7 @@ const router = express.Router();
 
 
 /* Employee List */
-router.get('/employees', async (req, res) => {
+router.get('/employees', auth, async (req, res) => {
 
     try {
 
@@ -22,7 +22,7 @@ router.get('/employees', async (req, res) => {
 
 
 /* Get Employee By ID */
-router.get('/employees/:id', async (req, res) => {
+router.get('/employees/:id', auth, async (req, res) => {
 
     const { id } = req.params;
 
@@ -44,7 +44,7 @@ router.get('/employees/:id', async (req, res) => {
 
 
 /* Create Employee */
-router.post('/employees', async (req, res) => {
+router.post('/employees', auth, async (req, res) => {
 
     const { first_name, last_name, email, position, salary, date_of_joining, department } = req.body;
 
@@ -81,7 +81,7 @@ router.post('/employees', async (req, res) => {
 
 
 /* Update Employee */
-router.put('/employees/:id', async (req, res) => {
+router.put('/employees/:id', auth, async (req, res) => {
 
     const { id } = req.params;
     const updates = req.body;
@@ -112,7 +112,7 @@ router.put('/employees/:id', async (req, res) => {
 
 
 /* Delete Employee */
-router.delete('/employees/:id', async (req, res) => {
+router.delete('/employees/:id', auth, async (req, res) => {
 
     const { id } = req.params;
 
@@ -135,6 +135,5 @@ router.delete('/employees/:id', async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 });
-
 
 module.exports = router;
