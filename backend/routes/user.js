@@ -73,51 +73,56 @@ router.post('/signup', async (req, res) => {
 
 /* User Login */
 router.post('/login', async (req, res) => {
+    const { email, password } = req.body;
 
-    const { username, password } = req.body;
-    
     const jwt = require("jsonwebtoken");
     const SECRET = "mysecret";
 
-    if (!username || !password) {
-        return res.status(400).json({ error: 'Username and password are required' });
+    // Validate inputs
+    if (!email || !password) {
+        return res.status(400).json({ 
+            error: 'Email and password are required' 
+        });
     }
 
     try {
-
-        const user = await User.findOne({ username });
+        // Find user by email
+        const user = await User.findOne({ email });
 
         if (!user) {
-            return res.json({ status: false, message: 'Username is invalid' });
+            return res.status(400).json({ 
+                status: false, 
+                message: 'Email is invalid' 
+            });
         }
 
-
+        // Compare passwords
         const validPassword = await bcrypt.compare(password, user.password);
 
         if (!validPassword) {
-            return res.json({ status: false, message: 'Password is invalid' });
+            return res.status(400).json({ 
+                status: false, 
+                message: 'Password is invalid' 
+            });
         }
-            
 
-
+        // Create JWT token
         const token = jwt.sign(
-            { id: user._id, username: user.username },
+            { id: user._id, email: user.email },
             SECRET,
             { expiresIn: '1d' }
         );
 
+        // Success response
         return res.json({
             status: true,
             message: 'Login successful',
             token
         });
-    } 
-    
-    catch (err) {
 
+    } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
-
 
 module.exports = router;
