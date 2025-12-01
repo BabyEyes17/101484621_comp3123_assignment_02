@@ -9,28 +9,36 @@ import AddEmployee from "./pages/AddEmployee";
 import EditEmployee from "./pages/EditEmployee";
 import EmployeeDetails from "./pages/EmployeeDetails";
 
+
 function RequireAuth({ children }) {
   const token = localStorage.getItem("token");
   return token ? children : <Navigate to="/login" />;
 }
 
+
 function App() {
   return (
     <Router>
+
       <Navbar />
+
       <Routes>
-        
-        <Route path="/" element={<Navigate to="/login" />} />
 
+        <Route
+          path="/"
+          element={<Navigate to="/login" />}
+        />
 
+        <Route
+          path="/login"
+          element={<Login />}
+        />
 
-        {/* Public routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
+        <Route
+          path="/signup"
+          element={<Signup />}
+        />
 
-
-
-        {/* Protected routes */}
         <Route
           path="/employees"
           element={
@@ -67,11 +75,11 @@ function App() {
           }
         />
 
-
-        
       </Routes>
+
     </Router>
   );
 }
+
 
 export default App;
