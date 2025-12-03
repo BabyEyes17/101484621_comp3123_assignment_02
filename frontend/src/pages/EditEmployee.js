@@ -3,19 +3,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axiosClient";
 
 /* Icons */
-import AddEmployeeIcon from "../assets/user-plus-solid-full.svg";
+import ReplaceIcon from "../assets/repeat-solid-full.svg";
 import SaveIcon from "../assets/floppy-disk-solid-full.svg";
 import CancelIcon from "../assets/ban-solid-full.svg";
-import LogoutIcon from "../assets/right-from-bracket-solid-full.svg";
-import HomeIcon from "../assets/user-plus-solid-full.svg";
-import LoginIcon from "../assets/floppy-disk-solid-full.svg";
-import SignUpIcon from "../assets/ban-solid-full.svg";
-import SearchIcon from "../assets/magnifying-glass-solid-full.svg"
-import ClearIcon from "../assets/delete-left-solid-full.svg"
-import ViewIcon from "../assets/eye-solid-full.svg"
-import EditIcon from "../assets/pen-to-square-solid-full.svg"
-import DeleteIcon from "../assets/trash-solid-full.svg"
-import ReplaceIcon from "../assets/repeat-solid-full.svg";
 
 
 
@@ -179,19 +169,18 @@ export default function EditEmployee() {
           />
 
           <div className="button-group">
-            <button type="submit" className="btn-primary">
-              <img src={SaveIcon} className="icon" alt="save" />
+            <button type="submit" className="btn btn-primary">
+              <img src={SaveIcon} className="icon" alt="save" /> Save
             </button>
 
             <button
               type="button"
-              className="btn-cancel"
+              className="btn btn-cancel"
               onClick={() => navigate("/employees")}
             >
               <img src={CancelIcon} className="icon" alt="cancel" /> Cancel
             </button>
           </div>
-
         </form>
       </div>
     </div>

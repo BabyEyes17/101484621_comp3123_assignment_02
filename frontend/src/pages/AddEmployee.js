@@ -148,14 +148,14 @@ export default function AddEmployee() {
 
           {/* Buttons */}
           <div className="button-group">
-            <button type="submit" className="btn-primary">
+            <button type="submit" className="btn btn-primary">
               <img src={SaveIcon} className="icon" alt="add employee" />
               Add Employee
             </button>
 
             <button
               type="button"
-              className="btn-secondary"
+              className="btn btn-secondary"
               onClick={() => navigate("/employees")}
             >
               <img src={CancelIcon} className="icon" alt="cancel" />
