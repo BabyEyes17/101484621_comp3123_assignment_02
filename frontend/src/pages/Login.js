@@ -2,12 +2,13 @@ import { useState } from "react";
 import api from "../api/axiosClient";
 import { useNavigate } from "react-router-dom";
 
+
+
 export default function Login() {
   const navigate = useNavigate();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
@@ -21,46 +22,59 @@ export default function Login() {
 
       localStorage.setItem("token", res.data.token);
       navigate("/employees");
-
-    } catch (err) {
+    } catch {
       setError("Login failed.");
     }
   };
 
   return (
-    <div className="page">
-      <h2>Login</h2>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+  <div className="page-wrapper">
+    <div className="card">
+
+      <h2 className="page-title">Login</h2>
+
+      {error && <p className="error-text">{error}</p>}
 
       <form onSubmit={handleLogin}>
-
         <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-            required
-        />
-
-
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={e => setPassword(e.target.value)}
+          className="input-field"
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           required
         />
 
-        <button type="submit">Login</button>
+        <input
+          className="input-field"
+          type="password"
+          placeholder="Enter your password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
+
+        <button className="btn btn-primary" type="submit">
+          Login
+        </button>
       </form>
 
-      <p>
+      <p style={{ marginTop: "15px" }}>
         Don't have an account?{" "}
-        <span onClick={() => navigate("/signup")} style={{ color: "blue", cursor: "pointer" }}>
+        <span
+          style={{
+            color: "var(--orange)",
+            cursor: "pointer",
+            fontWeight: "600",
+          }}
+          onClick={() => navigate("/signup")}
+        >
           Sign up
         </span>
       </p>
+
     </div>
+  </div>
   );
 }

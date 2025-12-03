@@ -8,6 +8,9 @@ import EmployeeList from "./pages/EmployeeList";
 import AddEmployee from "./pages/AddEmployee";
 import EditEmployee from "./pages/EditEmployee";
 import EmployeeDetails from "./pages/EmployeeDetails";
+import "./theme.css";
+import DeleteEmployee from "./pages/DeleteEmployee";
+
 
 
 function RequireAuth({ children }) {
@@ -71,6 +74,15 @@ function App() {
           element={
             <RequireAuth>
               <EmployeeDetails />
+            </RequireAuth>
+          }
+        />
+
+        <Route 
+          path="/employees/:id/delete" 
+          element={
+            <RequireAuth>
+                <DeleteEmployee />
             </RequireAuth>
           }
         />

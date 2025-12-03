@@ -9,9 +9,7 @@ const app = express();
    CORS — must be FIRST middleware
 ----------------------------------------------*/
 const allowedOrigins = [
-  "https://101484621-comp3123-assignment-02-7ly7x3q2i.vercel.app",
-  "https://101484621-comp3123-assignment-02-240o6fwyl.vercel.app",
-  "http://localhost:3000"
+  "http://localhost:3000" // React frontend in Docker
 ];
 
 app.use(cors({
@@ -25,15 +23,24 @@ app.options(/.*/, cors());
 /* Body Parser */
 app.use(express.json());
 
-/* MongoDB */
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('Connected to MongoDB Atlas'))
-  .catch(err => console.error(err));
+/* ---------------------------------------------
+   MongoDB Connection
+----------------------------------------------*/
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log('Connected to MongoDB Atlas'))
+.catch(err => console.error(err));
 
-/* Static files */
+/* ---------------------------------------------
+   Static files (uploads)
+----------------------------------------------*/
 app.use("/uploads", express.static("uploads"));
 
-/* Routers */
+/* ---------------------------------------------
+   Routers
+----------------------------------------------*/
 const userRouter = require('./routes/user');
 const employeeRouter = require('./routes/employee');
 
@@ -45,10 +52,11 @@ app.get('/', (req, res) => {
   res.send('API is running');
 });
 
-/* Render / Local compatibility */
-const PORT = process.env.PORT || 3000;
-if (process.env.VERCEL) {
-  module.exports = app;
-} else {
-  app.listen(PORT, () => console.log(`Server running on ${PORT}`));
-}
+/* ---------------------------------------------
+   DOCKER-COMPATIBLE SERVER LISTENING
+----------------------------------------------*/
+const PORT = process.env.PORT || 8080;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Backend running on port ${PORT}`);
+});

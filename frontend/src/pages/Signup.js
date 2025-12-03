@@ -2,20 +2,23 @@ import { useState } from "react";
 import api from "../api/axiosClient";
 import { useNavigate } from "react-router-dom";
 
+
+
 export default function Signup() {
   const navigate = useNavigate();
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [error, setError] = useState("");
 
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
       const res = await api.post("/user/signup", {
-        username, email, password
+        username,
+        email,
+        password,
       });
 
       if (!res.data.status) {
@@ -23,43 +26,66 @@ export default function Signup() {
       }
 
       navigate("/login");
-
-    } catch (err) {
+    } catch {
       setError("Signup failed.");
     }
   };
 
   return (
-    <div className="page">
-      <h2>Signup</h2>
+    <div className="container">
+      <div className="page-wrapper">
+        <div className="card">
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+          <h2 className="page-title">Create Account</h2>
 
-      <form onSubmit={handleSignup}>
+          {error && <p className="error-text">{error}</p>}
 
-        <input
-          type="text"
-          placeholder="Username"
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        />
+          <form onSubmit={handleSignup}>
+            <input
+              className="input-field"
+              type="text"
+              placeholder="Choose a username"
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
 
-        <input
-          type="email"
-          placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        />
+            <input
+              className="input-field"
+              type="email"
+              placeholder="Enter your email"
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-        <input
-          type="password"
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        />
+            <input
+              className="input-field"
+              type="password"
+              placeholder="Create a password"
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
-        <button type="submit">Signup</button>
-      </form>
+            <button className="btn btn-primary" type="submit">
+              Signup
+            </button>
+          </form>
+
+          <p style={{ marginTop: "15px" }}>
+            Already have an account?{" "}
+            <span
+              style={{
+                color: "var(--orange)",
+                cursor: "pointer",
+                fontWeight: "600",
+              }}
+              onClick={() => navigate("/login")}
+            >
+              Login
+            </span>
+          </p>
+
+        </div>
+      </div>
     </div>
   );
 }

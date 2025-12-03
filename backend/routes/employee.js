@@ -38,6 +38,31 @@ router.get('/employees', async (req, res) => {
 
 
 
+/* Search Employee */
+router.get("/employees/search", async (req, res) => {
+  
+    const { department, position } = req.query;
+
+  const query = {};
+
+  if (department) query.department = department;
+  
+  if (position) query.position = position;
+
+  try {
+    
+    const results = await Employee.find(query);
+    res.json(results);
+  } 
+  
+  catch (err) {
+
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+
 /* Get Employee By ID */
 router.get('/employees/:id', async (req, res) => {
 
@@ -159,31 +184,6 @@ router.delete('/employees/:id', auth, async (req, res) => {
 
         res.status(500).json({ error: err.message });
     }
-});
-
-
-
-/* Search Employee */
-router.get("/employees/search", async (req, res) => {
-  
-    const { department, position } = req.query;
-
-  const query = {};
-
-  if (department) query.department = department;
-  
-  if (position) query.position = position;
-
-  try {
-    
-    const results = await Employee.find(query);
-    res.json(results);
-  } 
-  
-  catch (err) {
-
-    res.status(500).json({ error: err.message });
-  }
 });
 
 module.exports = router;

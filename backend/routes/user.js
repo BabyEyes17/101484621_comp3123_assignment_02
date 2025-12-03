@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
+require("dotenv").config();
 
 0.
 const router = express.Router();
@@ -68,7 +69,7 @@ router.post('/login', async (req, res) => {
     const { email, password } = req.body;
 
     const jwt = require("jsonwebtoken");
-    const SECRET = "mysecret";
+    const SECRET = process.env.JWT_SECRET;
 
     // Validate inputs
     if (!email || !password) {

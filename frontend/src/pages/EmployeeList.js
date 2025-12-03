@@ -3,6 +3,13 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axiosClient";
 import { API_BASE_URL } from "../api/config";
 
+/* Icons */
+import SearchIcon from "../assets/magnifying-glass-solid-full.svg";
+import ClearIcon from "../assets/delete-left-solid-full.svg";
+import AddEmployeeIcon from "../assets/user-plus-solid-full.svg";
+import ViewIcon from "../assets/eye-solid-full.svg";
+import EditIcon from "../assets/pen-to-square-solid-full.svg";
+import DeleteIcon from "../assets/trash-solid-full.svg";
 
 export default function EmployeeList() {
   const navigate = useNavigate();
@@ -12,12 +19,11 @@ export default function EmployeeList() {
   const [position, setPosition] = useState("");
   const [error, setError] = useState("");
 
-  // Fetch all employees
   const fetchEmployees = async () => {
     try {
       const res = await api.get("/emp/employees");
       setEmployees(res.data);
-    } catch (err) {
+    } catch {
       setError("Failed to fetch employees.");
     }
   };
@@ -26,152 +32,141 @@ export default function EmployeeList() {
     fetchEmployees();
   }, []);
 
-  // Handle delete
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this employee?")) return;
-
+    if (!window.confirm("Are you sure?")) return;
     try {
       await api.delete(`/emp/employees/${id}`);
-      fetchEmployees(); // refresh list
-    } catch (err) {
+      fetchEmployees();
+    } catch {
       alert("Failed to delete employee.");
     }
   };
 
-  // Handle search
   const handleSearch = async () => {
     try {
       const res = await api.get("/emp/employees/search", {
         params: { department, position }
       });
       setEmployees(res.data);
-    } catch (err) {
+    } catch {
       alert("Search failed.");
     }
   };
 
-  // Logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Employee List</h2>
+    <div className="page-wrapper">
 
-      {/* Logout button */}
-      <button 
-        style={{ float: "right", marginBottom: "10px" }} 
-        onClick={handleLogout}
-      >
-        Logout
-      </button>
+      {/* Top Bar */}
+      <div className="employee-top-row">
+        <div className="search-box">
+          <input
+            className="search-input"
+            type="text"
+            placeholder="Department"
+            value={department}
+            onChange={(e) => setDepartment(e.target.value)}
+          />
 
-      {/* Search Section */}
-      <div style={{ marginBottom: "20px" }}>
-        <input
-          type="text"
-          placeholder="Search by department"
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-          style={{ marginRight: "10px" }}
-        />
+          <input
+            className="search-input"
+            type="text"
+            placeholder="Position"
+            value={position}
+            onChange={(e) => setPosition(e.target.value)}
+          />
 
-        <input
-          type="text"
-          placeholder="Search by position"
-          value={position}
-          onChange={(e) => setPosition(e.target.value)}
-          style={{ marginRight: "10px" }}
-        />
+          <button className="btn btn-primary" onClick={handleSearch}>
+            <img src={SearchIcon} className="icon" alt="search" /> Search
+          </button>
 
-        <button onClick={handleSearch}>Search</button>
+          <button
+            className="btn btn-secondary"
+            onClick={() => {
+              setDepartment("");
+              setPosition("");
+              fetchEmployees();
+            }}
+          >
+            <img src={ClearIcon} className="icon" alt="clear" />
+          </button>
+        </div>
+      </div>
 
-        <button 
-          style={{ marginLeft: "10px" }} 
-          onClick={() => {
-            setDepartment("");
-            setPosition("");
-            fetchEmployees();
-          }}
+      {/* Page Title + Add */}
+      <div className="employee-header">
+        <h2 className="page-title">Employees</h2>
+
+        <button
+          className="btn btn-primary"
+          onClick={() => navigate("/employees/add")}
         >
-          Clear
+          <img src={AddEmployeeIcon} className="icon" alt="add employee" />
         </button>
       </div>
 
-      {/* Add Employee */}
-      <button onClick={() => navigate("/employees/add")} style={{ marginBottom: "20px" }}>
-        Add Employee
-      </button>
+      {error && <p className="error-text">{error}</p>}
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {/* Employee List */}
+      <div className="employee-list">
+        {employees.length === 0 ? (
+          <p className="no-results">No employees found.</p>
+        ) : (
+          employees.map((emp) => (
+            <div className="employee-row" key={emp._id}>
+              {/* LEFT: IMAGE */}
+              <div className="employee-img-wrap">
+                {emp.profileImageUrl ? (
+                  <img
+                    className="employee-img"
+                    src={`${API_BASE_URL}${emp.profileImageUrl}`}
+                    alt="profile"
+                  />
+                ) : (
+                  <div className="employee-img-placeholder">(No Image)</div>
+                )}
+              </div>
 
-      {/* Employee Table */}
-      <table border="1" cellPadding="10" style={{ width: "100%", borderCollapse: "collapse" }}>
-        <thead>
-          <tr style={{ background: "#f0f0f0" }}>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Department</th>
-            <th>Position</th>
-            <th>Date of Joining</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+              {/* MIDDLE: INFO */}
+              <div className="employee-info">
+                <h3>{emp.first_name} {emp.last_name}</h3>
+                <p className="employee-id">{emp._id}</p>
+                <p>{emp.email}</p>
+                <p>{emp.department || "-"}</p>
+                <p>{emp.position || "-"}</p>
+              </div>
 
-        <tbody>
-          {employees.length === 0 ? (
-            <tr>
-              <td colSpan="7" style={{ textAlign: "center" }}>No employees found.</td>
-            </tr>
-          ) : (
-            employees.map((emp) => (
-              <tr key={emp._id}>
-                <td>
-                  {emp.profileImageUrl ? (
-                    <img 
-                        src={`${API_BASE_URL}${emp.profileImageUrl}`} 
-                        alt="profile"
-                        width="60"
-                        height="60"
-                        style={{ borderRadius: "10px", objectFit: "cover" }}
-                    />
-                    ) : (
-                    <span>No Image</span>
-                    )}
-                </td>
+              {/* RIGHT: ACTIONS */}
+              <div className="employee-actions">
+                <button
+                  className="btn btn-primary"
+                  onClick={() => navigate(`/employees/${emp._id}`)}
+                >
+                  <img src={ViewIcon} className="icon" alt="view" />
+                </button>
 
-                <td>{emp.first_name} {emp.last_name}</td>
-                <td>{emp.email}</td>
-                <td>{emp.department || "-"}</td>
-                <td>{emp.position || "-"}</td>
-                <td>{new Date(emp.date_of_joining).toLocaleDateString()}</td>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => navigate(`/employees/${emp._id}/edit`)}
+                >
+                  <img src={EditIcon} className="icon" alt="edit" />
+                </button>
 
-                <td>
-                  
-                  <button onClick={() => navigate(`/employees/${emp._id}`)}>
-                    View
-                  </button>
-
-                  <button onClick={() => navigate(`/employees/${emp._id}/edit`)} style={{ marginLeft: "5px" }}>
-                    Edit
-                  </button>
-
-                  <button 
-                    onClick={() => handleDelete(emp._id)} 
-                    style={{ marginLeft: "5px", color: "red" }}
-                  >
-                    Delete
-                  </button>
-                  
-                </td>
-              </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+                <button
+                  className="btn btn-danger"
+                  onClick={() => navigate(`/employees/${emp._id}/delete`)}
+                >
+                  <img src={DeleteIcon} className="icon" alt="delete" />
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
 
     </div>
   );

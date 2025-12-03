@@ -3,6 +3,25 @@ import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axiosClient";
 import { API_BASE_URL } from "../api/config";
 
+/* Icons */
+import AddEmployeeIcon from "../assets/user-plus-solid-full.svg";
+import SaveIcon from "../assets/floppy-disk-solid-full.svg";
+import CancelIcon from "../assets/ban-solid-full.svg";
+import LogoutIcon from "../assets/right-from-bracket-solid-full.svg";
+import HomeIcon from "../assets/user-plus-solid-full.svg";
+import LoginIcon from "../assets/floppy-disk-solid-full.svg";
+import SignUpIcon from "../assets/ban-solid-full.svg";
+import SearchIcon from "../assets/magnifying-glass-solid-full.svg"
+import ClearIcon from "../assets/delete-left-solid-full.svg"
+import ViewIcon from "../assets/eye-solid-full.svg"
+import EditIcon from "../assets/pen-to-square-solid-full.svg"
+import DeleteIcon from "../assets/trash-solid-full.svg"
+import ReplaceIcon from "../assets/repeat-solid-full.svg";
+import BackIcon from "../assets/circle-chevron-left-solid-full.svg"
+import UserIcon from "../assets/user-solid-full.svg"
+
+
+
 export default function EmployeeDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -14,7 +33,7 @@ export default function EmployeeDetails() {
     try {
       const res = await api.get(`/emp/employees/${id}`);
       setEmployee(res.data);
-    } catch (err) {
+    } catch {
       setError("Failed to load employee details.");
     }
   };
@@ -24,67 +43,86 @@ export default function EmployeeDetails() {
   }, [id]);
 
   if (!employee) {
-    return <div style={{ padding: "20px" }}>Loading...</div>;
+    return (
+      <div className="page-wrapper">
+        <div className="card">
+          <h3 style={{ textAlign: "center" }}>Loading...</h3>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Employee Details</h2>
+    <div className="page-wrapper">
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      <div className="card">
+        <h2 className="page-title">Employee Details</h2>
 
-      {/* Profile Image */}
-      {employee.profileImageUrl && (
-        <img
-          src={`${API_BASE_URL}${employee.profileImageUrl}`}
-          alt="Employee"
-          width="150"
-          height="150"
-          style={{
-            borderRadius: "10px",
-            objectFit: "cover",
-            marginBottom: "20px",
-          }}
-        />
-      )}
+        {error && <p className="error-text">{error}</p>}
 
-      <p>
-        <strong>Name:</strong> {employee.first_name} {employee.last_name}
-      </p>
-      <p>
-        <strong>Email:</strong> {employee.email}
-      </p>
-      <p>
-        <strong>Position:</strong> {employee.position || "N/A"}
-      </p>
-      <p>
-        <strong>Department:</strong> {employee.department || "N/A"}
-      </p>
-      <p>
-        <strong>Salary:</strong> {employee.salary || "N/A"}
-      </p>
-      <p>
-        <strong>Date of Joining:</strong>{" "}
-        {new Date(employee.date_of_joining).toLocaleDateString()}
-      </p>
-      <p>
-        <strong>Created:</strong>{" "}
-        {new Date(employee.created_at).toLocaleString()}
-      </p>
-      <p>
-        <strong>Last Updated:</strong>{" "}
-        {new Date(employee.updated_at).toLocaleString()}
-      </p>
+        <div className="existing-image-wrap">
+          {employee.profileImageUrl ? (
+            <img
+              className="profile-image"
+              src={`${API_BASE_URL}${employee.profileImageUrl}`}
+              alt="Employee"
+            />
+          ) : (
+            <img src={UserIcon} className="icon" alt="user" />
+          )}
+        </div>
 
-      <br />
+        <div className="card-container">
+          <DetailRow label="Name" value={`${employee.first_name} ${employee.last_name}`} />
+          <DetailRow label="Email" value={employee.email} />
+          <DetailRow label="Position" value={employee.position || "N/A"} />
+          <DetailRow label="Department" value={employee.department || "N/A"} />
+          <DetailRow label="Salary" value={employee.salary || "N/A"} />
+          <DetailRow
+            label="Date of Joining"
+            value={new Date(employee.date_of_joining).toLocaleDateString()}
+          />
+          <DetailRow
+            label="Created"
+            value={new Date(employee.created_at).toLocaleString()}
+          />
+          <DetailRow
+            label="Last Updated"
+            value={new Date(employee.updated_at).toLocaleString()}
+          />
+        </div>
 
-      <button onClick={() => navigate(`/employees/${id}/edit`)}>Edit</button>
-      <button
-        style={{ marginLeft: "10px" }}
-        onClick={() => navigate("/employees")}
-      >
-        Back
-      </button>
+        <div className="button-group">
+          <button
+            className="btn btn-primary"
+            onClick={() => navigate(`/employees/${id}/edit`)}
+          >
+            <img src={EditIcon} className="icon" alt="edit" />
+          </button>
+
+          <button
+            className="btn btn-secondary"
+            onClick={() => navigate("/employees")}
+          >
+            <img src={BackIcon} className="icon" alt="back" />
+          </button>
+
+          <button
+            className="btn btn-danger"
+            onClick={() => navigate(`/employees/${employee._id}/delete`)}
+          >
+            <img src={DeleteIcon} className="icon" alt="delete" />
+          </button>
+        </div>
+      </div>
     </div>
+  );
+}
+
+function DetailRow({ label, value }) {
+  return (
+    <p style={{ marginBottom: "12px", fontSize: "16px" }}>
+      <strong style={{ color: "var(--orange)" }}>{label}:</strong> {value}
+    </p>
   );
 }

@@ -2,6 +2,23 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../api/axiosClient";
 
+/* Icons */
+import AddEmployeeIcon from "../assets/user-plus-solid-full.svg";
+import SaveIcon from "../assets/floppy-disk-solid-full.svg";
+import CancelIcon from "../assets/ban-solid-full.svg";
+import LogoutIcon from "../assets/right-from-bracket-solid-full.svg";
+import HomeIcon from "../assets/user-plus-solid-full.svg";
+import LoginIcon from "../assets/floppy-disk-solid-full.svg";
+import SignUpIcon from "../assets/ban-solid-full.svg";
+import SearchIcon from "../assets/magnifying-glass-solid-full.svg"
+import ClearIcon from "../assets/delete-left-solid-full.svg"
+import ViewIcon from "../assets/eye-solid-full.svg"
+import EditIcon from "../assets/pen-to-square-solid-full.svg"
+import DeleteIcon from "../assets/trash-solid-full.svg"
+import ReplaceIcon from "../assets/repeat-solid-full.svg";
+
+
+
 export default function EditEmployee() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -18,7 +35,6 @@ export default function EditEmployee() {
 
   const [error, setError] = useState("");
 
-  // Fetch existing employee
   const fetchEmployee = async () => {
     try {
       const res = await api.get(`/emp/employees/${id}`);
@@ -31,11 +47,8 @@ export default function EditEmployee() {
       setSalary(emp.salary || "");
       setDateOfJoining(emp.date_of_joining?.split("T")[0] || "");
       setDepartment(emp.department || "");
-
-      // Correct backend image field:
       setExistingImage(emp.profileImageUrl || null);
-
-    } catch (err) {
+    } catch {
       setError("Failed to load employee data.");
     }
   };
@@ -44,7 +57,6 @@ export default function EditEmployee() {
     fetchEmployee();
   }, [id]);
 
-  // Submit updated employee
   const handleUpdate = async (e) => {
     e.preventDefault();
 
@@ -67,106 +79,121 @@ export default function EditEmployee() {
       });
 
       navigate("/employees");
-
-    } catch (err) {
+    } catch {
       setError("Failed to update employee.");
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Edit Employee</h2>
+    <div className="page-wrapper">
+      <div className="card-container">
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        <h2 className="page-title">Edit Employee</h2>
 
-      <form onSubmit={handleUpdate}>
+        {error && <p className="error-text">{error}</p>}
 
-        <input
-          type="text"
-          placeholder="First Name"
-          value={first_name}
-          onChange={(e) => setFirstName(e.target.value)}
-          required
-        /><br/><br/>
+        <form onSubmit={handleUpdate}>
 
-        <input
-          type="text"
-          placeholder="Last Name"
-          value={last_name}
-          onChange={(e) => setLastName(e.target.value)}
-          required
-        /><br/><br/>
+          <input
+            className="input-field"
+            type="text"
+            placeholder="First Name"
+            value={first_name}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+          />
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        /><br/><br/>
+          <input
+            className="input-field"
+            type="text"
+            placeholder="Last Name"
+            value={last_name}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+          />
 
-        <input
-          type="text"
-          placeholder="Position"
-          value={position}
-          onChange={(e) => setPosition(e.target.value)}
-        /><br/><br/>
+          <input
+            className="input-field"
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-        <input
-          type="number"
-          placeholder="Salary"
-          value={salary}
-          onChange={(e) => setSalary(e.target.value)}
-        /><br/><br/>
+          <input
+            className="input-field"
+            type="text"
+            placeholder="Position"
+            value={position}
+            onChange={(e) => setPosition(e.target.value)}
+          />
 
-        <label>Date of Joining:</label><br/>
-        <input
-          type="date"
-          value={date_of_joining}
-          onChange={(e) => setDateOfJoining(e.target.value)}
-          required
-        /><br/><br/>
+          <input
+            className="input-field"
+            type="number"
+            placeholder="Salary"
+            value={salary}
+            onChange={(e) => setSalary(e.target.value)}
+          />
 
-        <input
-          type="text"
-          placeholder="Department"
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-        /><br/><br/>
+          <label className="input-label">Date of Joining</label>
+          <input
+            className="input-field"
+            type="date"
+            value={date_of_joining}
+            onChange={(e) => setDateOfJoining(e.target.value)}
+            required
+          />
 
-        {/* Existing Image */}
-        {existingImage && (
-          <div>
-            <p>Current Profile Image:</p>
-            <img
-              src={`${process.env.REACT_APP_API_URL}${existingImage}`}
-              alt="Employee"
-              width="120"
-              height="120"
-              style={{ borderRadius: "10px", objectFit: "cover" }}
-            />
-            <br /><br />
+          <input
+            className="input-field"
+            type="text"
+            placeholder="Department"
+            value={department}
+            onChange={(e) => setDepartment(e.target.value)}
+          />
+
+          {existingImage && (
+            <div className="existing-image-wrap">
+              <p className="existing-image-label">Current Profile Image</p>
+
+              <img
+                src={`${process.env.REACT_APP_API_URL}${existingImage}`}
+                alt="Employee"
+                className="existing-image"
+              />
+
+              <div className="replace-icon-wrap">
+                <img src={ReplaceIcon} className="icon" alt="replace" />
+              </div>
+            </div>
+          )}
+
+          <label className="input-label">Upload New Image (optional)</label>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setNewProfileImage(e.target.files[0])}
+            className="file-input"
+          />
+
+          <div className="button-group">
+            <button type="submit" className="btn-primary">
+              <img src={SaveIcon} className="icon" alt="save" />
+            </button>
+
+            <button
+              type="button"
+              className="btn-cancel"
+              onClick={() => navigate("/employees")}
+            >
+              <img src={CancelIcon} className="icon" alt="cancel" /> Cancel
+            </button>
           </div>
-        )}
 
-        <label>Upload New Image (optional):</label><br />
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setNewProfileImage(e.target.files[0])}
-        /><br/><br/>
-
-        <button type="submit">Update Employee</button>
-
-        <button
-          type="button"
-          style={{ marginLeft: "10px" }}
-          onClick={() => navigate("/employees")}
-        >
-          Cancel
-        </button>
-
-      </form>
+        </form>
+      </div>
     </div>
   );
 }

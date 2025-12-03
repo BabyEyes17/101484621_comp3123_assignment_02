@@ -1,6 +1,13 @@
+/* Add Employee */
+
 import { useState } from "react";
 import api from "../api/axiosClient";
 import { useNavigate } from "react-router-dom";
+
+/* Icons */
+import AddEmployeeIcon from "../assets/user-plus-solid-full.svg";
+import SaveIcon from "../assets/floppy-disk-solid-full.svg";
+import CancelIcon from "../assets/ban-solid-full.svg";
 
 export default function AddEmployee() {
   const navigate = useNavigate();
@@ -21,6 +28,7 @@ export default function AddEmployee() {
 
     try {
       const form = new FormData();
+
       form.append("first_name", first_name);
       form.append("last_name", last_name);
       form.append("email", email);
@@ -34,88 +42,129 @@ export default function AddEmployee() {
       }
 
       await api.post("/emp/employees", form, {
-        headers: { "Content-Type": "multipart/form-data" },
+        headers: { "Content-Type": "multipart/form-data" }
       });
 
       navigate("/employees");
-    } catch (err) {
+    } catch {
       setError("Failed to add employee.");
     }
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>Add Employee</h2>
+    <div className="page">
+      <div className="card">
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        <h2 className="page-title">
+          <img src={AddEmployeeIcon} className="icon" alt="add employee" /> 
+          Add Employee
+        </h2>
 
-      <form onSubmit={handleAdd}>
+        {error && <p className="error-text">{error}</p>}
 
-        <input
-          type="text"
-          placeholder="First Name"
-          value={first_name}
-          onChange={(e) => setFirstName(e.target.value)}
-          required
-        /><br/><br/>
+        <form onSubmit={handleAdd}>
 
-        <input
-          type="text"
-          placeholder="Last Name"
-          value={last_name}
-          onChange={(e) => setLastName(e.target.value)}
-          required
-        /><br/><br/>
+          {/* First Name */}
+          <label className="input-label">First Name</label>
+          <input
+            className="input-field"
+            type="text"
+            placeholder="Enter first name"
+            value={first_name}
+            onChange={(e) => setFirstName(e.target.value)}
+            required
+          />
 
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-        /><br/><br/>
+          {/* Last Name */}
+          <label className="input-label">Last Name</label>
+          <input
+            className="input-field"
+            type="text"
+            placeholder="Enter last name"
+            value={last_name}
+            onChange={(e) => setLastName(e.target.value)}
+            required
+          />
 
-        <input
-          type="text"
-          placeholder="Position"
-          value={position}
-          onChange={(e) => setPosition(e.target.value)}
-        /><br/><br/>
+          {/* Email */}
+          <label className="input-label">Email</label>
+          <input
+            className="input-field"
+            type="email"
+            placeholder="Enter email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-        <input
-          type="number"
-          placeholder="Salary"
-          value={salary}
-          onChange={(e) => setSalary(e.target.value)}
-        /><br/><br/>
+          {/* Position */}
+          <label className="input-label">Position</label>
+          <input
+            className="input-field"
+            type="text"
+            placeholder="Job position"
+            value={position}
+            onChange={(e) => setPosition(e.target.value)}
+          />
 
-        <label>Date of Joining:</label><br/>
-        <input
-          type="date"
-          value={date_of_joining}
-          onChange={(e) => setDateOfJoining(e.target.value)}
-          required
-        /><br/><br/>
+          {/* Salary */}
+          <label className="input-label">Salary</label>
+          <input
+            className="input-field"
+            type="number"
+            placeholder="Salary amount"
+            value={salary}
+            onChange={(e) => setSalary(e.target.value)}
+          />
 
-        <input
-          type="text"
-          placeholder="Department"
-          value={department}
-          onChange={(e) => setDepartment(e.target.value)}
-        /><br/><br/>
+          {/* Date of Joining */}
+          <label className="input-label">Date of Joining</label>
+          <input
+            className="input-field"
+            type="date"
+            value={date_of_joining}
+            onChange={(e) => setDateOfJoining(e.target.value)}
+            required
+          />
 
-        <label>Profile Image:</label><br/>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setProfileImage(e.target.files[0])}
-        /><br/><br/>
+          {/* Department */}
+          <label className="input-label">Department</label>
+          <input
+            className="input-field"
+            type="text"
+            placeholder="Department name"
+            value={department}
+            onChange={(e) => setDepartment(e.target.value)}
+          />
 
-        <button type="submit">Add Employee</button>
-        <button type="button" style={{ marginLeft: "10px" }} onClick={() => navigate("/employees")}>
-          Cancel
-        </button>
-      </form>
+          {/* Profile Image Upload */}
+          <label className="input-label">Profile Image</label>
+          <input
+            className="input-field file-input"
+            type="file"
+            accept="image/*"
+            onChange={(e) => setProfileImage(e.target.files[0])}
+          />
+
+          {/* Buttons */}
+          <div className="button-group">
+            <button type="submit" className="btn-primary">
+              <img src={SaveIcon} className="icon" alt="add employee" />
+              Add Employee
+            </button>
+
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={() => navigate("/employees")}
+            >
+              <img src={CancelIcon} className="icon" alt="cancel" />
+              Cancel
+            </button>
+          </div>
+        </form>
+
+      </div>
     </div>
   );
 }
